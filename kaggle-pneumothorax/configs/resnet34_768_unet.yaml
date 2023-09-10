@@ -1,0 +1,54 @@
+dumps:
+    path: /root/dumps
+    weights: weights
+    logs: logs
+
+model: &model src.models.unet.ResnetSuperVision
+model_params: &model_params
+    seg_classes: 1
+    backbone_arch: resnet34
+
+train_params:
+    name: resnet34_768_unet
+    model: *model
+    model_params: *model_params
+    loss: src.losses.ComboSuperVisionLoss
+    loss_params:
+        weights:
+            bce: 3
+            dice: 1
+        sv_weight: 0.1
+    metrics:
+        src.metrics.DiceMetric:
+            score_threshold: 0.5
+      
+
+predict_params:
+    model: *model
+    model_params: *model_params
+
+epochs: &epochs 50
+
+data_params:
+    data_folder: /root/data/siim_png_convert
+    transform:
+        train: /root/repo/help-repo/siim-help/kaggle-pneumothorax/configs/train_transforms_768.yaml
+        val: /root/repo/help-repo/siim-help/kaggle-pneumothorax/configs/val_transforms_768.yaml
+        test: /root/repo/help-repo/siim-help/kaggle-pneumothorax/configs/val_transforms_768.yaml
+    batch_size: 8
+    num_workers: 8
+    folds_path: /root/data/siim_png_convert/k_fold.csv
+    positive_ratio_range: [0.22, 0.8]
+    epochs: *epochs
+
+stages:
+    cosine:
+        optimizer: Adam
+        optimizer_params:
+            lr: 0.000075
+            weight_decay: 0.00001
+        scheduler: CosineAnnealingLR
+        scheduler_params:
+            T_max: 8
+            eta_min: 0.000001
+        epochs: *epochs
