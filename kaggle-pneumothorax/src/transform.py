@@ -9,7 +9,7 @@ def load_transform(mode:Literal["train","val"]="train") :
 	factor=0.05
 
 	img_size=512
-
+	#### light transform and stack3 loading style
 	def norm (mask,*args,**kargs):
 		mask=mask/255
 		mask.astype(float) 
@@ -19,7 +19,20 @@ def load_transform(mode:Literal["train","val"]="train") :
 		image=image/255
 		image=np.expand_dims(image,axis=0)
 		return np.repeat(image,3,axis=0)
+	train_transform = A.Compose([                     
+					A.ShiftScaleRotate( scale_limit =(-0.2, 0.2) ,rotate_limit=(-10,10)),
+					A.RandomResizedCrop(height=img_size,width=img_size,scale=(0.9, 1.0),ratio=(0.75, 1.3333333333333333)),
 
+					A.HorizontalFlip(),
+					A.Lambda(image=norm_and_stackChannel, mask=norm),              
+								])
+
+	test_transform=A.Compose([  
+					A.Resize(height=img_size,width=img_size),
+					A.Lambda(image=norm_and_stackChannel, mask=norm),
+									]) 
+	#### light transform and stack3 loading style
+	###heavier loading style
 	# train_transform=A.Compose([
 	# A.HorizontalFlip(),
 	# # A.OneOf([
@@ -42,18 +55,7 @@ def load_transform(mode:Literal["train","val"]="train") :
 	# A.Lambda(image=norm_and_stackChannel, mask=norm),       
 
 	# ])
-	train_transform = A.Compose([                     
-					A.ShiftScaleRotate( scale_limit =(-0.2, 0.2) ,rotate_limit=(-10,10)),
-					A.RandomResizedCrop(height=img_size,width=img_size,scale=(0.9, 1.0),ratio=(0.75, 1.3333333333333333)),
-
-					A.HorizontalFlip(),
-					A.Lambda(image=norm_and_stackChannel, mask=norm),              
-								])
-
-	test_transform=A.Compose([  
-					A.Resize(height=img_size,width=img_size),
-					A.Lambda(image=norm_and_stackChannel, mask=norm),
-									]) 
+	
 
 	if mode=="train":
 		return train_transform

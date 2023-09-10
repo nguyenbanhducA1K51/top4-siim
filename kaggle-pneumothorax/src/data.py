@@ -28,7 +28,7 @@ class PneumothoraxDataset(Dataset):
     def __getitem__(self, index):
         sample = {'image': cv2.imread(self.img_filenames[index], 0)}
 
-        # sample = {'image': cv2.imread(self.img_filenames[index], 0)}
+        # sample = {'image': cv2.imread(self.img_filenames[index], 1)}
 
         mask = cv2.imread(self.mask_filenames[index], 0)
   
@@ -41,7 +41,6 @@ class PneumothoraxDataset(Dataset):
 
         transformed=self.transform(image=sample['image'],mask=sample['mask'])
         sample['image']=transformed['image'] 
-        # sample['image']=np.transpose(transformed['image']/255, (2,0,1))
         sample['mask']=transformed['mask']
 
         sample['image_id'] = osp.basename(self.img_filenames[index])
