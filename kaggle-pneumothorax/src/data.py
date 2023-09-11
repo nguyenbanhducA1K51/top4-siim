@@ -94,7 +94,7 @@ def make_filenames(data_folder, mode, fold=None, folds_path=None):
     folds = pd.read_csv(folds_path)
 
 
-    # folds=folds[:100]
+    # folds=folds[:1000]
     if mode == 'train':
         folds = folds[folds['Fold'].astype(str) != str(fold)]
     elif mode == 'val':

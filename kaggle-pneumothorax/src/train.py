@@ -20,7 +20,7 @@ def parse_args():
 
 def create_callbacks(name, dumps):
 
-    # this slash / only work if the first component is Path object (in this case is Path(dumps['path']))
+
     log_dir = Path(dumps['path']) / dumps['logs'] / name
     #/root/dumps/logs/resnet34_768_unet/fold0
     # because this line  config['train_params']['name'] = f'{config["train_params"]["name"]}/fold{args.fold}'

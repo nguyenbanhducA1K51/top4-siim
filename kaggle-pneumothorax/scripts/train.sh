@@ -1,7 +1,7 @@
 set -e
 
-export PROJECT_ROOT="/root/repo/help-repo/siim-help/kaggle-pneumothorax"
-for FOLD in {1..5}
+export PROJECT_ROOT="/root/repo/siim-help/kaggle-pneumothorax"
+for FOLD in {1..1}
 do
 PYTHONPATH="${PROJECT_ROOT}" \
 OMP_NUM_THREADS=1 \
